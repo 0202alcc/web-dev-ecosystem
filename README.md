@@ -32,5 +32,21 @@ See [documentation.md](docs/documentation.md) for detailed setup instructions.
 - Add user authentication
 - Expand documentation
 
+### Future CI/CD Enhancements
+#### 5. **Additional Infrastructure**
+   - **Shared Utilities**: If needed, create composite actions in `.github/actions/` for common steps (e.g., setup Python/Node).
+   - **Documentation**: Update `docs/` with guidelines for using reusable workflows in new repos.
+   - **Testing**: Add a test job in `ci.yml` to validate reusable workflows (e.g., dry-run calls).
+
+#### 6. **Future-Proofing for Dependencies**
+   - **Workflow Dependencies**: If shared code dependencies arise, add `needs:` in `ci.yml` to chain jobs (e.g., lint before tests).
+   - **Matrix Expansion**: If many features, convert to a matrix job in `ci.yml` that dynamically calls reusables based on changed paths.
+
+#### Tradeoffs and Considerations
+- **Complexity vs. Reusability**: Reusable workflows add indirection but enable seamless updates across repos.
+- **Security**: Since workflows are called from public repos, ensure no secrets are exposed; use inputs for sensitive data.
+- **Performance**: Global jobs (linting) should be <2-3 minutes; optimize with caching.
+- **Maintenance**: Changes to reusables affect all calling repos—test thoroughly.
+
 ## License
 *(Coming soon)*
