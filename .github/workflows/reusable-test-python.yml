@@ -1,0 +1,27 @@
+name: Reusable Test Python
+on:
+  workflow_call:
+    inputs:
+      python_version:
+        default: '3.14'
+        type: string
+      working_directory:
+        default: 'features/webpush/flask'
+        type: string
+jobs:
+  test-python:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python_version }}
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+    - name: Test Flask WebPush
+      run: |
+        cd ${{ inputs.working_directory }}
+        uv venv
+        uv pip install -e ".[dev]"
+        uv run pytest tests/ -v

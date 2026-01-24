@@ -1,0 +1,12 @@
+# Example CI for New Repo (after sparse checkout)
+name: CI
+on:
+  push:
+    branches: [ main ]
+jobs:
+  test-flask:
+    uses: owner/web-dev-ecosystem/.github/workflows/reusable-test-python.yml@main
+    with:
+      working_directory: '.'  # Adjust if structure differs
+  lint:
+    uses: owner/web-dev-ecosystem/.github/workflows/reusable-lint.yml@main

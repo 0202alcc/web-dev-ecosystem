@@ -1,0 +1,24 @@
+name: Reusable Test JavaScript
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        default: '18'
+        type: string
+      working_directory:
+        default: 'features/webpush/react'
+        type: string
+jobs:
+  test-javascript:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node_version }}
+    - name: Test React WebPush
+      run: |
+        cd ${{ inputs.working_directory }}
+        npm ci
+        npm run build

@@ -1,0 +1,22 @@
+name: Reusable Lint
+on:
+  workflow_call:
+    inputs:
+      lint_paths:
+        default: 'features/** shared/**'
+        type: string
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.14'
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+    - name: Install ruff
+      run: uv tool install ruff
+    - name: Run Linting
+      run: uv run ruff check ${{ inputs.lint_paths }}

@@ -2,40 +2,19 @@ name: CI
 on:
   push:
     branches: [ main ]
+    paths: ['features/**', 'shared/**', 'docs/**', '*.md']
   pull_request:
     branches: [ main ]
+    paths: ['features/**', 'shared/**', 'docs/**', '*.md']
+  workflow_dispatch:
 jobs:
+  lint:
+    uses: ./.github/workflows/reusable-lint.yml
+  validate-docs:
+    uses: ./.github/workflows/reusable-validate-docs.yml
   test-python:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.14'
-    
-    - name: Install uv
-      run: curl -LsSf https://astral.sh/uv/install.sh | sh
-    
-    - name: Test Flask WebPush
-      run: |
-        cd features/webpush/flask
-        uv venv
-        uv pip install -e ".[dev]"
-        uv run pytest tests/ -v
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.modified, 'features/webpush/flask/') || contains(github.event.head_commit.added, 'features/webpush/flask/')
+    uses: ./.github/workflows/reusable-test-python.yml
   test-javascript:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-    
-    - name: Test React WebPush
-      run: |
-        cd features/webpush/react
-        npm ci
-        npm run build
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.modified, 'features/webpush/react/') || contains(github.event.head_commit.added, 'features/webpush/react/')
+    uses: ./.github/workflows/reusable-test-javascript.yml

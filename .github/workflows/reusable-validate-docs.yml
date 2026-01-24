@@ -1,0 +1,23 @@
+name: Reusable Validate Docs
+on:
+  workflow_call:
+    inputs:
+      doc_patterns:
+        default: 'docs/** *.md'
+        type: string
+jobs:
+  validate-docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Validate Docs
+      run: |
+        # Check that every README.md has a "TO DO:" section (case-insensitive, may be empty)
+        total_readmes=$(find ${{ inputs.doc_patterns }} -name 'README.md' | wc -l)
+        readmes_with_todo=$(find ${{ inputs.doc_patterns }} -name 'README.md' -exec grep -l -i "TO DO:" {} \; | wc -l)
+        if [ "$total_readmes" -eq "$readmes_with_todo" ]; then
+          echo 'Doc validation passed: All README.md files have TO DO: sections'
+        else
+          echo "Doc validation failed: $total_readmes README.md files found, but only $readmes_with_todo have TO DO: sections"
+          exit 1
+        fi
