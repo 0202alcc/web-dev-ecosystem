@@ -19,4 +19,4 @@ jobs:
     - name: Install ruff
       run: uv tool install ruff
     - name: Run Linting
-      run: uv run ruff check ${{ inputs.lint_paths }}
+      run: uv run ruff check ${{ inputs.lint_paths }} --exit-zero

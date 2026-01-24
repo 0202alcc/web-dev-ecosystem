@@ -28,5 +28,9 @@ See [documentation.md](docs/documentation.md) for detailed setup instructions.
 - **PWA**: Service workers, offline support, installability
 - **Deployment**: Local network with Tailscale support
 
+## TO DO:
+- Add user authentication
+- Expand documentation
+
 ## License
 *(Coming soon)*

@@ -325,6 +325,10 @@ For production deployment:
 - For MagicBell support: [GitHub Discussions](https://github.com/orgs/magicbell/discussions)
 - For app-specific issues: Open an issue on this repository
 
+## TO DO:
+- Improve error handling
+- Add more test cases
+
 ## License
 
 This project is based on MagicBell's official webpush-ios-template.
