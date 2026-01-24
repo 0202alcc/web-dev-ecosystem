@@ -3,7 +3,7 @@ on:
   workflow_call:
     inputs:
       doc_patterns:
-        default: 'docs/** *.md'
+        default: 'features/** *.md'
         type: string
 jobs:
   validate-docs:
