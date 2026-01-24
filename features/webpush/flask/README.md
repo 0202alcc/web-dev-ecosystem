@@ -7,7 +7,31 @@ A Flask-based implementation of web push notifications using pywebpush.
 - Comprehensive test suite
 ## Quick Start
 ```bash
-cd features/webpush/flask
+# Create new project
+mkdir PROJECT-NAME-HERE
+cd PROJECT-NAME-HERE
+
+# Init git and add remote
+git init
+git remote add origin https://github.com/0202alcc/web-dev-ecosystem.git
+
+# Enable sparse checkout
+git config core.sparseCheckout true
+
+# Configure sparse checkout to only include Flask webpush
+echo "features/webpush/flask/*" >> .git/info/sparse-checkout
+
+# Pull only the Flask webpush directory
+git pull origin main
+
+# Move files to project root (optional)
+mv features/webpush/flask/* .
+rm -rf features/
+```
+
+How to run the project
+```bash
+cd features/webpush/flask # If files are not in root then cd to flask project
 uv venv
 uv pip install -e ".[dev]"
 uv run main.py
