@@ -52,4 +52,5 @@ uv run pytest tests/
 ## TO DO:
 - Implement user login features
 - Add more tests
+- Update docs
 For more details, see the main monorepo documentation.
