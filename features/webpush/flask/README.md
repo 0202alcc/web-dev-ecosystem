@@ -49,4 +49,6 @@ uv run main.py
 ```bash
 uv run pytest tests/
 ```
+## TO DO:
+- Implement user login features
 For more details, see the main monorepo documentation.
