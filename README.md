@@ -28,7 +28,7 @@ Organized into feature-first hierarchy: `features/{feature_name}/{variant}/`
 - Include in `ecosystem.json` for automated updates.
 - Follow UV policy and standards.
 
-## TODO
+## TO DO:
 
 - Add new features/variants.
 - Enhance ecosystem safeguards.
