@@ -22,9 +22,8 @@ jobs:
       working-directory: ${{ inputs.working_directory }}
     - name: Test Flask WebPush
       run: |
-        pwd
-        ls -la
+        cd ${{ inputs.working_directory }}
+        pwd && ls -la
         uv venv
         uv pip install -e ".[dev]"
         uv run pytest tests/ -v
-      working-directory: ${{ inputs.working_directory }}
