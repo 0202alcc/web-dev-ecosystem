@@ -11,7 +11,7 @@ class AuthService:
     def generate_user_jwt(
         user_email: Optional[str] = None, user_external_id: Optional[str] = None
     ) -> str:
-        """Generate User JWT for MagicBell authentication.
+        """Generate User JWT for webpush authentication.
 
         Args:
             user_email: User's email address
@@ -27,7 +27,7 @@ class AuthService:
             raise ValueError("Either user_email or user_external_id must be provided")
 
         payload: Dict[str, Any] = {
-            "api_key": Config.MAGICBELL_API_KEY,
+            "api_key": Config.SECRET_KEY,
         }
 
         if user_email:

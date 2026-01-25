@@ -93,7 +93,7 @@ uv run mypy .                   # Type checking
   ```python
   try:
       result = push_service.send(message)
-  except MagicBellError as e:
+  except Exception as e:
       logger.error(f"Push failed: {e}")
       return {"error": "Notification failed"}, 500
   ```
@@ -239,7 +239,7 @@ tests/
 - Support both individual and broadcast notifications
 
 ### PWA Guidelines
-- Service worker in `static/sw.js` must include MagicBell importScripts
+- Service worker in `static/sw.js` must handle webpush subscriptions
 - Manifest in `static/manifest.json` for PWA installation
 - Offline-first approach for critical paths
 - Test PWA installation on iOS (requires HTTPS)

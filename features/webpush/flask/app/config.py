@@ -14,8 +14,6 @@ class Config:
     """Configuration class for Flask application."""
 
     SECRET_KEY: str = os.getenv("FLASK_SECRET_KEY", "dev-secret-key")
-    MAGICBELL_API_KEY: str = os.getenv("MAGICBELL_API_KEY", "")
-    MAGICBELL_API_SECRET: str = os.getenv("MAGICBELL_API_SECRET", "")
     VAPID_PUBLIC_KEY: str = os.getenv("VAPID_PUBLIC_KEY", "")
     VAPID_PRIVATE_KEY: str = os.getenv("VAPID_PRIVATE_KEY", "")
     BOT_JWT_SECRET: str = os.getenv("BOT_JWT_SECRET", "")
