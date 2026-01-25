@@ -323,7 +323,7 @@ def generate_user_jwt():
             {
                 "success": True,
                 "token": token,
-                "api_key": Config.MAGICBELL_API_KEY,
+                "api_key": Config.JWT_SECRET,
                 "vapid_public_key": Config.VAPID_PUBLIC_KEY,
             }
         )

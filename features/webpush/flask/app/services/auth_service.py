@@ -37,7 +37,7 @@ class AuthService:
 
         return jwt.encode(
             payload,
-            Config.MAGICBELL_API_SECRET,
+            Config.JWT_SECRET,
             algorithm="HS256",
         )
 

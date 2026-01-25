@@ -1,6 +1,7 @@
 import time
 
 import pytest
+import time
 
 from app import create_app
 
@@ -58,18 +59,18 @@ class TestAPIEndpoints:
         assert data["success"] is False
 
     def test_send_notification_unauthorized_ip(self, client):
-        """Test notification endpoint with unauthorized IP."""
-        payload = {
+        """Test sending notification with unauthorized IP returns 403."""
+        data = {
             "bot_id": "bot_001",
-            "title": "Test",
-            "content": "Test notification",
+            "title": "Test Notification",
+            "content": "Test message",
             "timestamp": int(time.time() * 1000),
         }
 
-        response = client.post(
-            "/api/send-notification",
-            json=payload,
-        )
+        # Set invalid IP in test client
+        client.environ_base = {"REMOTE_ADDR": "192.168.1.1"}
+
+        response = client.post("/api/send-notification", json=data)
 
         assert response.status_code == 403
 
