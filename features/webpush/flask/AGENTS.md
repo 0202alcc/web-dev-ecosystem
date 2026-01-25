@@ -258,7 +258,13 @@ tests/
 - Use docstrings for all public functions and classes
 - Keep docstrings concise but descriptive
 - Add inline comments only for complex logic
-- Update this AGENTS.md when adding new patterns or tools
+### Python Execution Policy
+All Python code, dependencies, and script execution in this monorepo (including `/scripts`) MUST use `uv`. Never run `pip`, `python`, or scripts directly—always via `uv run`, `uv pip`, or `uv venv`.
+- Examples:
+  - Install: `uv pip install -e .[dev]`
+  - Run: `uv run python main.py` or `uv run pytest`
+- Why: Ensures consistency, reproducibility, and security using `uv lock` for dependency resolution.
+- Warning: Agents will enforce this in code reviews; non-compliance may break CI or cause issues. Update this AGENTS.md when adding new patterns or tools
 
 ### Git Commits
 - Write descriptive commit messages in imperative mood

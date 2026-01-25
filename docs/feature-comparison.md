@@ -1,5 +1,8 @@
 ```markdown
 # Framework and Feature Comparison
+
+## Tooling Standards
+For all Python code in the monorepo (including scripts under `/scripts` and features like Flask WebPush), `uv` must be used exclusively for dependency management and execution. This ensures reproducible environments and prevents inconsistencies. Always use commands like `uv run python <script>` or `uv pip install` instead of direct `python` or `pip`.
 ## WebPush Implementations
 ### Flask WebPush
 - **Backend**: Python Flask server

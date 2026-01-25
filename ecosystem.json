@@ -1,0 +1,6 @@
+[
+  {
+    "repo": "0202alcc/notification-server",
+    "subscriptions": ["features/webpush/flask"]
+  }
+]
