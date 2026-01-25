@@ -9,4 +9,4 @@ jobs:
     with:
       working_directory: '.'  # Adjust if structure differs
   lint:
-    uses: owner/web-dev-ecosystem/.github/workflows/reusable-lint.yml@main
+      uses: ./.github/workflows/reusable-validate-docs.yml

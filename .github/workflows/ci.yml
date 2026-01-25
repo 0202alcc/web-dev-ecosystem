@@ -14,7 +14,7 @@ jobs:
     uses: ./.github/workflows/reusable-validate-docs.yml
   test-python:
     if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.modified, 'features/webpush/flask/') || contains(github.event.head_commit.added, 'features/webpush/flask/')
-    uses: ./.github/workflows/            reusable-test-flask-webpush-framework.yml
+     uses: ./.github/workflows/reusable-test-flask-webpush-framework.yml
   test-javascript:
     if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.modified, 'features/webpush/react/') || contains(github.event.head_commit.added, 'features/webpush/react/')
     uses: ./.github/workflows/reusable-test-javascript.yml
