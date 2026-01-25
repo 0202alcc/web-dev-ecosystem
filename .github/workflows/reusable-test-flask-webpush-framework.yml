@@ -11,6 +11,9 @@ on:
 jobs:
   test-python:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python
@@ -21,7 +24,6 @@ jobs:
       run: curl -LsSf https://astral.sh/uv/install.sh | sh
     - name: Test Flask WebPush
       run: |
-        cd ${{ inputs.working_directory }}
         uv venv
         uv pip install -e ".[dev]"
         uv run pytest tests/ -v
