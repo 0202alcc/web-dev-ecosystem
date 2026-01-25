@@ -21,8 +21,8 @@ jobs:
       run: curl -LsSf https://astral.sh/uv/install.sh | sh
       working-directory: ${{ inputs.working_directory }}
     - name: Test Flask WebPush
+      working-directory: features/webpush/flask
       run: |
-        cd ${{ inputs.working_directory }}
         pwd && ls -la
         uv venv
         uv pip install -e ".[dev]"
