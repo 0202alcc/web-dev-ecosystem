@@ -25,13 +25,6 @@ def test_client(test_app: Flask):
     return test_app.test_client()
 
 
-@pytest.fixture(scope="session")
-def mock_subscription_data():
-    """Load mock subscription data."""
-    with open("tests/fixtures/mock_subscription.json") as f:
-        return json.load(f)
-
-
 class TestServerStartup:
     """Test basic server startup."""
 
@@ -53,7 +46,7 @@ class TestPushNotification:
     """Test mocked push notification flow."""
 
     def test_send_bot_notification_mock_success(
-        self, test_client, mock_subscription_data
+        self, test_client
     ):
         """Test sending a bot notification with mocked external success."""
         # Mock the external webpush call
