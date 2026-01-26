@@ -67,8 +67,6 @@ uv run pytest tests/ -v --tb=short
 - ✅ Basic push notification flow works with mocked external calls
 - ✅ Sparse checkout users get functional code without obvious breakage
 
-## TODO: Testing & Feature Improvements (Future)
-
 ### High Priority
 - **Error Handling Tests**: Add comprehensive auth failure scenarios, malformed requests, expired tokens, and network error simulation
 - **Full End-to-End Flow**: Implement complete notification lifecycle (subscription registration → push sending → client receipt)
@@ -85,7 +83,7 @@ uv run pytest tests/ -v --tb=short
 - **Monitoring & Metrics**: Add tests for logging and error reporting functionality
 - **Security Audits**: Penetration testing and vulnerability assessments
 
-## TODO: Feature Development (Future)
+## TO DO: Feature Development (Future)
 - Implement user login features
 - Add WebSocket support for real-time status updates
 For more details, see the main monorepo documentation.
