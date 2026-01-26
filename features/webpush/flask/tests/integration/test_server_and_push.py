@@ -57,12 +57,12 @@ class TestPushNotification:
     ):
         """Test sending a bot notification with mocked external success."""
         # Mock the external webpush call
-        with patch("services.push_service.webpush") as mock_webpush:
+        with patch("app.services.push_service.webpush") as mock_webpush:
             mock_webpush.return_value = {"success": True}
 
             # Create test payload
             payload = {
-                "subscription": mock_subscription_data["subscription"],
+                "subscription": mock_subscription_data,
                 "payload": {"title": "Test Notification", "body": "Test body"},
             }
 
