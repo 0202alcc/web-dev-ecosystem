@@ -16,6 +16,7 @@ def test_app():
     """Create and configure a Flask app for testing."""
     app = create_app()
     app.config["TESTING"] = True
+    app.config["ENV"] = "development"  # <--- allows /test-notification
     return app
 
 
