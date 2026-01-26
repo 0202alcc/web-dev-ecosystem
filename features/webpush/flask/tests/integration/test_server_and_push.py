@@ -57,18 +57,19 @@ class TestPushNotification:
     ):
         """Test sending a bot notification with mocked external success."""
         # Mock the external webpush call
-        with patch("app.services.push_service.webpush") as mock_webpush:
-            mock_webpush.return_value = {"success": True}
+        with patch("app.services.push_service.PushService.broadcast_notification") as mock_broadcast:
+            # Pretend one user was successfully notified
+            mock_broadcast.return_value = 1
 
             # Create test payload
             payload = {
-                "subscription": mock_subscription_data,
-                "payload": {"title": "Test Notification", "body": "Test body"},
+                "title": "Test Notification",
+                "content": "Test body",
             }
 
             # Make request (skip auth details for MVP smoke test)
             response = test_client.post(
-                "/api/send_bot_notification",
+                "/api/test-notification",
                 json=payload,
                 headers={"Content-Type": "application/json"},
             )

@@ -12,6 +12,7 @@ load_env()
 
 class Config:
     """Configuration class for Flask application."""
+    ENV = os.getenv("FLASK_ENV", "production")
 
     SECRET_KEY: str = os.getenv("FLASK_SECRET_KEY", "dev-secret-key")
     VAPID_PUBLIC_KEY: str = os.getenv("VAPID_PUBLIC_KEY", "")
@@ -19,3 +20,9 @@ class Config:
     BOT_JWT_SECRET: str = os.getenv("BOT_JWT_SECRET", "")
     JWT_SECRET: str = os.getenv("JWT_SECRET", "dummy-secret")
     ALLOWED_BOT_IPS: str = os.getenv("ALLOWED_BOT_IPS", "")
+
+class DevelopmentConfig(Config):
+    DEBUG = True
+
+class TestingConfig(Config):
+    TESTING = True

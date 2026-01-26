@@ -9,8 +9,22 @@ def create_app() -> Flask:
 
     app.config.from_object("app.config.Config")
 
-    from app.routes import api
+    # ---------- ENV sanity check ----------
+    allowed_envs = {"production", "development", "testing"}
+    if app.config.get("ENV") not in allowed_envs:
+        raise RuntimeError(
+            f"Invalid ENV value '{app.config.get('ENV')}'! Must be one of {allowed_envs}"
+        )
 
+    if app.config.get("ENV") != "production":
+        print(
+            f"⚠️  WARNING: App running in {app.config.get('ENV').upper()} mode! "
+            "Make sure this is intentional."
+        )
+
+    # -------------------- continue normal init --------------------
+
+    from app.routes import api
     app.register_blueprint(api.bp)
 
     @app.route("/")

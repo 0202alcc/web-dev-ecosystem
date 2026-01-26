@@ -85,5 +85,6 @@ uv run pytest tests/ -v --tb=short
 
 ## TO DO: Feature Development (Future)
 - Implement user login features
+- add a second CI patch later to test sending to a specific user via PushService.send_notification.
 - Add WebSocket support for real-time status updates
 For more details, see the main monorepo documentation.

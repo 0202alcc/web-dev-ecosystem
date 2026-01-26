@@ -1,6 +1,6 @@
 import logging
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 
 from app.config import Config
 from app.models.bot_request import BotNotificationRequest
@@ -223,6 +223,16 @@ def send_test_notification():
     Returns:
         JSON response with notification status
     """
+
+    # Security gate
+    if current_app.config.get("ENV") == "production":
+        return jsonify(
+            {
+                "success": False,
+                "error": "Endpoint disabled in production",
+            }
+        ), 403
+
     try:
         data = request.get_json()
 

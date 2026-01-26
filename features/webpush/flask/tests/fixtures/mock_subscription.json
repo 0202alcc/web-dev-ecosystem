@@ -1,7 +1,0 @@
-{
-  "endpoint": "https://updates.push.services.mozilla.com/push/v1/example-subscription-id",
-  "keys": {
-    "p256dh": "BOr-example-base64-p256dh-key",
-    "auth": "auth-example-base64-secret"
-  }
-}
