@@ -46,11 +46,46 @@ uv run main.py
 - Timestamp validation (5-minute window)
 - Optional JWT authentication
 ## Testing
+
+### Quick Test Run
 ```bash
-uv run pytest tests/
+cd features/webpush/flask # Navigate to the flask project
+uv venv
+uv pip install -e ".[dev]"
+uv run pytest tests/ -v --tb=short
 ```
-## TO DO:
+
+### Test Structure
+- **Unit Tests** (`tests/unit/`): Core logic and services (18 existing tests)
+- **Integration Tests** (`tests/integration/`): API endpoints and full flows (8 new tests)
+- **Coverage**: ~60-70% on critical paths (server startup, API responses, basic push notifications)
+- **CI Integration**: Tests run automatically via GitHub Actions: `.github/workflows/reusable-test-flask-webpush-framework.yml`
+
+### Current Test Coverage Ensures
+- ✅ Server starts without import errors or port conflicts
+- ✅ Core API endpoints respond (health, config, JWT generation)
+- ✅ Basic push notification flow works with mocked external calls
+- ✅ Sparse checkout users get functional code without obvious breakage
+
+## TODO: Testing & Feature Improvements (Future)
+
+### High Priority
+- **Error Handling Tests**: Add comprehensive auth failure scenarios, malformed requests, expired tokens, and network error simulation
+- **Full End-to-End Flow**: Implement complete notification lifecycle (subscription registration → push sending → client receipt)
+- **API Documentation Tests**: Add tests to ensure API responses match documented schemas
+
+### Medium Priority
+- **Browser Integration Tests**: Service worker registration, push permission requests, and real browser notifications
+- **Performance Benchmarks**: Load testing for multiple concurrent notifications
+- **Configuration Testing**: Test different environment variable combinations and edge cases
+
+### Low Priority
+- **UI Integration**: Test the PWA frontend with real notifications
+- **Cross-Browser Compatibility**: Test on Chrome, Firefox, Safari, and mobile browsers
+- **Monitoring & Metrics**: Add tests for logging and error reporting functionality
+- **Security Audits**: Penetration testing and vulnerability assessments
+
+## TODO: Feature Development (Future)
 - Implement user login features
-- Add more tests
-- Update docs
+- Add WebSocket support for real-time status updates
 For more details, see the main monorepo documentation.
