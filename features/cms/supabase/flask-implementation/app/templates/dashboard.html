@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Flask CMS{% endblock %}
+
+{% block content %}
+<h1>Dashboard</h1>
+<p style="color: #7f8c8d;">Welcome, {{ user.email }}!</p>
+
+<!-- Local Cache Section (Client-side localStorage) -->
+<div class="dashboard-section">
+    <h2>Local Cache (Client-side Storage)</h2>
+    <p style="color: #7f8c8d; margin-bottom: 1rem;">
+        Device-local data stored in browser localStorage with FIFO eviction.
+        <strong>Limit:</strong> {{ config.eviction.limit }} rows
+    </p>
+
+    <div class="mb-1">
+        <button onclick="addLocalRow()" class="btn btn-primary btn-small">Add Row</button>
+        <button onclick="clearLocalCache()" class="btn btn-danger btn-small">Clear All</button>
+    </div>
+
+    <div id="localCacheContainer">
+        <table id="localCacheTable">
+            <thead id="localCacheHeader"></thead>
+            <tbody id="localCacheBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Remote Database Section (Supabase) -->
+<div class="dashboard-section">
+    <h2>Remote Database (Persistent)</h2>
+    <p style="color: #7f8c8d; margin-bottom: 1rem;">
+        Persistent data stored in Supabase with user isolation (RLS).
+    </p>
+
+    <!-- Add/Generate Dummy Content Form -->
+    <div class="mb-1">
+        <form id="addContentForm" style="display: inline-block; margin-right: 1rem;">
+            <input
+                type="text"
+                id="newContent"
+                placeholder="# Markdown content here..."
+                style="width: 300px; display: inline-block; margin-right: 0.5rem;"
+            >
+            <button type="submit" class="btn btn-success btn-small">Add Content</button>
+        </form>
+        <button onclick="generateDummy()" class="btn btn-primary btn-small">Generate Dummy</button>
+    </div>
+
+    <!-- Remote Data Table -->
+    <table>
+        <thead>
+            <tr>
+                {% for header in config.headers %}
+                <th>{{ header }}</th>
+                {% endfor %}
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="remoteDataBody">
+            {% if remote_data %}
+                {% for row in remote_data %}
+                <tr data-id="{{ row.id }}">
+                    <td>{{ row.timestamp }}</td>
+                    <td><code>{{ row.id[:8] }}...</code></td>
+                    <td>{{ row.content[:50] }}{% if row.content|length > 50 %}...{% endif %}</td>
+                    <td class="actions">
+                        <button onclick="editContent('{{ row.id }}')" class="btn btn-primary btn-small">Edit</button>
+                        <button onclick="deleteContent('{{ row.id }}')" class="btn btn-danger btn-small">Delete</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="{{ config.headers|length + 1 }}" class="text-center">No content yet. Add some!</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// User config from server
+// @ts-ignore
+const CONFIG = {{ config | tojson }};
+const CACHE_KEY = 'flask_cms_local_cache';
+
+// Initialize local cache display on page load
+document.addEventListener('DOMContentLoaded', function() {
+    renderLocalCache();
+});
+
+// Get local cache from localStorage
+function getLocalCache() {
+    const cached = localStorage.getItem(CACHE_KEY);
+    return cached ? JSON.parse(cached) : [];
+}
+
+// Save local cache to localStorage
+function saveLocalCache(data) {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+}
+
+// FIFO eviction: remove oldest entries if over limit
+function applyEviction(data) {
+    const limit = CONFIG.eviction.limit;
+    if (CONFIG.eviction.enabled && data.length > limit) {
+        // FIFO: remove from beginning (oldest)
+        return data.slice(-limit);
+    }
+    return data;
+}
+
+// Add new row to local cache
+function addLocalRow() {
+    const cache = getLocalCache();
+    const newRow = {
+        timestamp: new Date().toISOString(),
+        id: generateUUID(),
+        content: `Local entry ${cache.length + 1}`
+    };
+
+    cache.push(newRow);
+    const evicted = applyEviction(cache);
+    saveLocalCache(evicted);
+    renderLocalCache();
+}
+
+// Remove row from local cache
+function removeLocalRow(index) {
+    const cache = getLocalCache();
+    cache.splice(index, 1);
+    saveLocalCache(cache);
+    renderLocalCache();
+}
+
+// Clear all local cache
+function clearLocalCache() {
+    if (confirm('Clear all local cache data?')) {
+        localStorage.removeItem(CACHE_KEY);
+        renderLocalCache();
+    }
+}
+
+// Render local cache table
+function renderLocalCache() {
+    const cache = getLocalCache();
+    const headers = CONFIG.headers;
+
+    // Render header
+    const headerRow = document.getElementById('localCacheHeader');
+    headerRow.innerHTML = '<tr>' +
+        headers.map(h => `<th>${h}</th>`).join('') +
+        '<th>Actions</th></tr>';
+
+    // Render body
+    const tbody = document.getElementById('localCacheBody');
+    if (cache.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="${headers.length + 1}" class="text-center">No local data. Add some!</td></tr>`;
+    } else {
+        tbody.innerHTML = cache.map((row, idx) => {
+            return `<tr>
+                ${headers.map(h => `<td>${h === 'id' ? row[h].substring(0, 8) + '...' : row[h]}</td>`).join('')}
+                <td><button onclick="removeLocalRow(${idx})" class="btn btn-danger btn-small">Remove</button></td>
+            </tr>`;
+        }).join('');
+    }
+}
+
+// Simple UUID generator
+function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
+// Remote data operations
+document.getElementById('addContentForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const content = document.getElementById('newContent').value;
+
+    if (!content) {
+        alert('Please enter some content');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/content', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            location.reload();
+        } else {
+            alert('Error: ' + result.error);
+        }
+    } catch (error) {
+        alert('Error adding content: ' + error);
+    }
+});
+
+async function generateDummy() {
+    try {
+        const response = await fetch('/api/dummy', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({})
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            location.reload();
+        } else {
+            alert('Error: ' + result.error);
+        }
+    } catch (error) {
+        alert('Error generating dummy: ' + error);
+    }
+}
+
+async function deleteContent(id) {
+    if (!confirm('Delete this content?')) return;
+
+    try {
+        const response = await fetch(`/api/content/${id}`, {
+            method: 'DELETE'
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            location.reload();
+        } else {
+            alert('Error: ' + result.error);
+        }
+    } catch (error) {
+        alert('Error deleting content: ' + error);
+    }
+}
+
+async function editContent(id) {
+    const newContent = prompt('Enter new content:');
+    if (!newContent) return;
+
+    try {
+        const response = await fetch(`/api/content/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content: newContent })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            location.reload();
+        } else {
+            alert('Error: ' + result.error);
+        }
+    } catch (error) {
+        alert('Error updating content: ' + error);
+    }
+}
+</script>
+{% endblock %}

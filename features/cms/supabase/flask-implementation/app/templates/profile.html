@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Flask CMS{% endblock %}
+
+{% block content %}
+<h1>User Profile</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="grid grid-2">
+    <!-- User Information Section -->
+    <div class="profile-section">
+        <h2>User Information</h2>
+        <div class="form-group">
+            <label>Email:</label>
+            <p>{{ user.email }}</p>
+        </div>
+        <div class="form-group">
+            <label>User ID:</label>
+            <p><code>{{ user.id }}</code></p>
+        </div>
+        <div class="form-group">
+            <label>Account Created:</label>
+            <p>{{ user.created_at }}</p>
+        </div>
+        <a href="{{ url_for('profile.link_account') }}" class="btn btn-primary">Manage Linked Accounts</a>
+    </div>
+
+    <!-- Identity Provider Metadata (Developer-focused) -->
+    <div class="profile-section">
+        <h2>Identity Provider Metadata</h2>
+        <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 1rem;">
+            Raw provider data (developer-focused view)
+        </p>
+        <div class="identity-display">
+            <pre>{{ identities | tojson(indent=2) }}</pre>
+        </div>
+    </div>
+</div>
+
+<!-- Configuration Section -->
+<div class="profile-section">
+    <h2>User Configuration</h2>
+    <p style="color: #7f8c8d; margin-bottom: 1rem;">
+        Edit your configuration settings. Changes apply on next page refresh (no server restart required).
+    </p>
+
+    <form method="POST" action="{{ url_for('profile.update_config') }}">
+        <div class="form-group">
+            <label for="config">Configuration (JSON):</label>
+            <textarea
+                id="config"
+                name="config"
+                rows="15"
+                style="font-family: monospace;"
+                required
+            >{{ config | tojson(indent=2) }}</textarea>
+            <small style="color: #7f8c8d;">
+                Default headers: ["timestamp", "id", "content"]<br>
+                Eviction methods: "fifo" (default), custom logic coming soon<br>
+                Note: No validation enforced - edit carefully!
+            </small>
+        </div>
+        <button type="submit" class="btn btn-success">Update Configuration</button>
+    </form>
+</div>
+
+<style>
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+code {
+    background: #f4f4f4;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-family: monospace;
+}
+</style>
+{% endblock %}
